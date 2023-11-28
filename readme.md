@@ -29,7 +29,7 @@ PotentLight, an innovative RL-based solution for adaptive traffic signal control
   Two representative measures as evaluation criteria to digitally assess the performance of the method.
 
 
-# Dataset
+# Datasets
 
 This repo containes four real-world datasets, which are stored in the `./data`
 
