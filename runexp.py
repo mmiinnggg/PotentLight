@@ -5,7 +5,7 @@ import csv
 
 from cityflow_env import CityFlowEnvM
 from agent import DQNAgent
-from metric import TravelTimeMetric, ThroughputMetric, SpeedScoreMetric,MaxWaitingTimeMetric
+from metric import TravelTimeMetric, ThroughputMetric
 from utility import *
 
 import os
@@ -35,7 +35,7 @@ log_name = args.log_dir + '/'+ args.identifier + '_potent_' + str(args.eta) + '_
 CsvFile = open(log_name, 'w')
 CsvWriter = csv.writer(CsvFile)
 CsvWriter.writerow(
-    ["Mode", "episode", "step", "travel_time", "throughput", "speed score", "max waiting"])
+    ["Mode", "episode", "step", "travel_time", "throughput"])
 CsvFile.close()
 
 def build(path=args.config_file):
@@ -73,7 +73,7 @@ def build(path=args.config_file):
         agents[id_] = agent
     print("agents built.")
 
-    metrics = [TravelTimeMetric(world), ThroughputMetric(world), SpeedScoreMetric(world), MaxWaitingTimeMetric(world)]
+    metrics = [TravelTimeMetric(world), ThroughputMetric(world)]
 
     return config, world, agents, metrics
 
@@ -160,7 +160,7 @@ def train(path = args.config_file):
             CsvFile = open(log_name, 'a+')
             CsvWriter = csv.writer(CsvFile)
             CsvWriter.writerow(
-                ["-", e+1, i, metrics[0].eval(), metrics[1].eval(), metrics[2].eval(), metrics[3].eval()])
+                ["-", e+1, i, metrics[0].eval(), metrics[1].eval()])
             CsvFile.close()
 
     plot_data_lists([episode_travel_time], ['travel time'], figure_name=args.log_dir + '/'+ args.identifier + '_potent_'  + str(args.eta) + '_' + str(args.epoch)+  '_' +  crt_time  + '_travel time.pdf')
@@ -244,7 +244,7 @@ def test(path = args.config_file):
         CsvFile = open(log_name, 'a+')
         CsvWriter = csv.writer(CsvFile)
         CsvWriter.writerow(
-            ["test", "-", i, metrics[0].eval(), metrics[1].eval(), metrics[2].eval(), metrics[3].eval()])
+            ["test", "-", i, metrics[0].eval(), metrics[1].eval()])
         CsvFile.close()
 
     return world.eng.get_average_travel_time()
