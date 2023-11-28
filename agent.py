@@ -210,13 +210,7 @@ class DQNAgent(object):
         ob = self._reshape_ob(ob)
         act_values = self.model.predict([phase, ob])
         return np.argmax(act_values[0])
-
-    def choose_action(self, state):
-        if np.random.uniform() < self.epsilon:
-            return random.randrange(self.action_size)
-        act_values = self.model.predict(state)
-        return np.argmax(act_values[0])
-
+    
     def sample(self):
         return random.randrange(self.action_size)
 
