@@ -162,31 +162,18 @@ class DQNAgent(object):
         self.phase_list = phase_list
         self.timing_list = timing_list
 
-    def _build_model_(self):
-        # Neural Net for Deep-Q learning Model
-        model = Sequential()
-        model.add(Dense(100, input_dim=self.state_size, activation='relu'))
-        model.add(Dense(self.action_size, activation='linear'))
-        model.compile(loss='mse',
-                      optimizer=Adam(lr=self.learning_rate))
-        return model
-
     def _build_model(self):
         '''Initialize a Q network'''
 
-        # initialize feature node
         dic_input_node = {}
         for feature_name in self.dic_traffic_env_conf["LIST_STATE_FEATURE"]:
             if "phase" in feature_name or "adjacency" in feature_name:
                 _shape = self.dic_traffic_env_conf["DIC_FEATURE_DIM"]["D_" + feature_name.upper()]
             else:
-                # _shape = (self.ob_length,)
                 _shape = (self.state_size,)
-                # _shape = (self.dic_traffic_env_conf["DIC_FEATURE_DIM"]["D_"+feature_name.upper()])
             dic_input_node[feature_name] = Input(shape=_shape,
                                                  name="input_" + feature_name)
 
-        # add cnn to image features
         dic_flatten_node = {}
         for feature_name in self.dic_traffic_env_conf["LIST_STATE_FEATURE"]:
             if len(self.dic_traffic_env_conf["DIC_FEATURE_DIM"]["D_" + feature_name.upper()]) > 1:
@@ -194,20 +181,16 @@ class DQNAgent(object):
             else:
                 dic_flatten_node[feature_name] = dic_input_node[feature_name]
 
-        # concatenate features
         list_all_flatten_feature = []
         for feature_name in self.dic_traffic_env_conf["LIST_STATE_FEATURE"]:
             list_all_flatten_feature.append(dic_flatten_node[feature_name])
         all_flatten_feature = concatenate(list_all_flatten_feature, axis=1, name="all_flatten_feature")
 
-        # shared dense layer, N_LAYER
         locals()["dense_0"] = Dense(self.dic_agent_conf["D_DENSE"], activation="relu", name="dense_0")(
             all_flatten_feature)
         for i in range(1, self.dic_agent_conf["N_LAYER"]):
             locals()["dense_%d" % i] = Dense(self.dic_agent_conf["D_DENSE"], activation="relu", name="dense_%d" % i)(
                 locals()["dense_%d" % (i - 1)])
-        # dense1 = Dense(self.dic_agent_conf["D_DENSE"], activation="relu", name="dense_1")(all_flatten_feature)
-        # dense2 = Dense(self.dic_agent_conf["D_DENSE"], activation="relu", name="dense_2")(dense1)
         q_values = Dense(self.action_size, activation="linear", name="q_values")(
             locals()["dense_%d" % (self.dic_agent_conf["N_LAYER"] - 1)])
         network = Model(inputs=[dic_input_node[feature_name]
@@ -230,10 +213,9 @@ class DQNAgent(object):
 
     def choose_action(self, state):
         if np.random.uniform() < self.epsilon:
-        # if np.random.uniform() < self.epsilon - self.step * 0.0002:
             return random.randrange(self.action_size)
         act_values = self.model.predict(state)
-        return np.argmax(act_values[0])  # returns action
+        return np.argmax(act_values[0])
 
     def sample(self):
         return random.randrange(self.action_size)
@@ -242,36 +224,11 @@ class DQNAgent(object):
         weights = self.model.get_weights()
         self.target_model.set_weights(weights)
 
-    '''
-    def remember_timing(self, state, timing, reward, next_state):
-        timing = self.timing_list.index(timing)  # index
-        self.memory.append((state, timing, reward, next_state))
-    '''
-
-    def remember_(self, state, action, reward, next_state):
-        action = self.phase_list.index(action)  # index
-        self.memory.append((state, action, reward, next_state))
-
     def remember(self, ob, phase, action, reward, next_ob, next_phase):
         action = self.phase_list.index(action)
         self.memory.append((ob, phase, action, reward, next_ob, next_phase))
 
-    def replay__(self): # Timing if flag for agent_timing
-        if self.batch_size > len(self.memory):
-            minibatch = self.memory
-        else:
-            minibatch = random.sample(self.memory, self.batch_size)
-        obs, phases, actions, rewards, next_obs, next_phases = [np.stack(x) for x in np.array(minibatch).T]
-        target = rewards + self.gamma * np.amax(self.target_model.predict([next_phases, next_obs]), axis=1)
-        target_f = self.model.predict([phases, obs])
-        for i, action in enumerate(actions):
-            target_f[i][action] = target[i]
-        history = self.model.fit([phases, obs], target_f, epochs=1, verbose=0)
-        # print(history.history['loss'])
-        if self.epsilon > self.epsilon_min:
-            self.epsilon *= self.epsilon_decay
-
-    def replay(self): # Timing if flag for agent_timing
+    def replay(self):
         if len(self.memory) < self.batch_size:
             return
         self.step += 1
@@ -287,44 +244,12 @@ class DQNAgent(object):
 
         lr = 1
         for i, replay in enumerate(replay_batch):
-            # ob, phase, action, reward, next_ob, next_phase
-            # state, action, reward, next_state
             _, _, a, reward, state_n, _ = replay
             if (state_t == state_n).all():
                 Q[i][a] = (1 - lr) * Q[i][a] + lr * reward
             else:
                 Q[i][a] = (1 - lr) * Q[i][a] + lr * (reward + self.gamma * np.amax(Q_next[i]))
-        # 传入网络训练
-        # print("s_batch:\n", s_batch, "Q:\n", Q)
         self.model.fit([phases, s_batch], Q, verbose=0)
-
-        if self.epsilon > self.epsilon_min:
-            self.epsilon *= self.epsilon_decay
-
-    def replay_(self): # Timing if flag for agent_timing
-        if len(self.memory) < self.batch_size:
-            return
-        self.step += 1
-        state_t = self.memory[-1][-1]
-        replay_batch = random.sample(self.memory, self.batch_size)
-        s_batch = np.reshape(np.array([replay[0] for replay in replay_batch]), [self.batch_size, self.state_size])
-        next_s_batch = np.reshape(np.array([replay[3] for replay in replay_batch]),
-                                      [self.batch_size, self.state_size])
-
-        Q = self.model.predict(s_batch)
-        Q_next = self.model.predict(next_s_batch)
-
-        lr = 1
-        for i, replay in enumerate(replay_batch):
-            _, a, reward, state_n = replay
-            if (state_t == state_n).all():
-                Q[i][a] = (1 - lr) * Q[i][a] + lr * reward
-            else:
-                Q[i][a] = (1 - lr) * Q[i][a] + lr * (reward + self.gamma * np.amax(Q_next[i]))
-
-        # 传入网络训练
-        # print("s_batch:\n", s_batch, "Q:\n", Q)
-        self.model.fit(s_batch, Q, verbose=0)
 
         if self.epsilon > self.epsilon_min:
             self.epsilon *= self.epsilon_decay
