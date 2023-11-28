@@ -1,11 +1,6 @@
 import random
 import numpy as np
 from collections import deque
-'''
-from keras.models import Sequential
-from keras.layers import Dense, Dropout
-from keras.optimizers import Adam
-'''
 from keras.models import Sequential
 from keras.layers import Dense, Dropout
 from keras.optimizers import Adam, RMSprop, SGD
