@@ -1,4 +1,4 @@
-from . import BaseMetric
+from .base import BaseMetric
 import numpy as np
 
 class ThroughputMetric(BaseMetric):
