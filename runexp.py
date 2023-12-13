@@ -5,7 +5,8 @@ import csv
 
 from cityflow_env import CityFlowEnvM
 from agent import DQNAgent
-from metric import TravelTimeMetric, ThroughputMetric
+from metric.travel_time import TravelTimeMetric
+from metric.throughput import ThroughputMetric
 from utility import *
 
 import os
