@@ -26,7 +26,9 @@ PotentLight, an innovative RL-based solution for adaptive traffic signal control
 # Files
 * ``runexp.py``
   The main file of experiments where the args can be changed.
-
+  
+ > The **arg '--dataset'** requires special attention, and it should be consistent with the dataset being used. For example, config1, config2, and config3 correspond to '--dataset==jinan', while config4 corresponds to '--dataset==hangzhou'.
+ 
 * ``agent.py``
   Implement RL agent for proposed method.
 
@@ -43,7 +45,8 @@ PotentLight, an innovative RL-based solution for adaptive traffic signal control
 # Datasets
 
 This repo containes four real-world datasets, which are stored in the `./data`
-
+ > The **storage path -- "dir"** to each dataset, as written in its corresponding JSON file, should be accurately specified based on your local machine's configuration.
+  
 | Configurations |City| Traffic flow |
 |----------------|--|---------|
 | Config 1       |Jinan | anon_3_4_jinan_real     |
