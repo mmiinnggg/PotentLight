@@ -9,6 +9,17 @@ PotentLight, an innovative RL-based solution for adaptive traffic signal control
 |frame|Keras| v2.3.1   |
 |backend|tensorflow-gpu| 1.14.0  |
 |simulation platform|CityFlow| 1.1.0   |
+|other | collections | 3.0.0  |
+|other | tqdm | 4.65.0 |
+|other | numpy | 1.21.5  |
+|other | math | --  |
+|other | matplotlib |  3.5.3  |
+|other | argparse | --  |
+|other | datetime | --   |
+|other | time | --  |
+|other | csv | --  |
+|other | json | --  |
+
 
 - CityFlow Installation Guide: https://cityflow.readthedocs.io/en/latest/install.html
 
