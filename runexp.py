@@ -24,7 +24,7 @@ parser.add_argument('--eta', type=int, default=0.1, help='')
 parser.add_argument('--dataset', type=str, default='hangzhou', help='dataset name')
 parser.add_argument('--identifier', type=str, default='config4', help='identifier')
 ###
-parser.add_argument('--config_file', type=str, default='/mnt/d/Compile/PY/potentlight/data/config4.json', help='path of config file')
+parser.add_argument('--config_file', type=str, default='./data/config4.json', help='path of config file')
 parser.add_argument('--save_dir', type=str, default="model/config4", help='directory in which model should be saved')
 parser.add_argument('--log_dir', type=str, default="log/config4", help='directory in which logs should be saved')
 args = parser.parse_args()
