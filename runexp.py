@@ -237,10 +237,12 @@ def test(path = args.config_file):
         for id_ in config["intersection_id"]:
             mean_reward[id_] = episodes_rewards[id_] / episodes_decision_num[id_]
 
+        '''
         for id_ in config["intersection_id"]:
-            with open(args.log_dir + '/inter_pressure/'+ args.identifier + '_potent_pressure_' + id_ + crt_time + '.csv', 'a+') as ttf:
+            with open(args.log_dir + '/'+ args.identifier + '_potent_pressure_' + id_  + '_' + crt_time + '.txt', 'a+') as ttf:
                 ttf.write(str(pressure[id_]) + "\n\n")
             ttf.close()
+        '''
 
         CsvFile = open(log_name, 'a+')
         CsvWriter = csv.writer(CsvFile)
