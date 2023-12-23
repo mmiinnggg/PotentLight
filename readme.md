@@ -2,26 +2,19 @@
 PotentLight, an innovative RL-based solution for adaptive traffic signal control, rooted in the theoretical framework of MP control
 
 # Environment & Dependency:
-
-|Type|Name| Version |
-|---|---|---------|
-|language|python| 3.7     |
-|frame|Keras| v2.3.1   |
-|backend|tensorflow-gpu| 1.14.0  |
-|simulation platform|CityFlow| 1.1.0   |
-|other | collections | 3.0.0  |
-|other | tqdm | 4.65.0 |
-|other | numpy | 1.21.5  |
-|other | math | --  |
-|other | matplotlib |  3.5.3  |
-|other | argparse | --  |
-|other | datetime | --   |
-|other | time | --  |
-|other | csv | --  |
-|other | json | --  |
+- This code has been tested on Python 3.7, and compatibility with other versions is not guaranteed. It is recommended to use Python versions 3.5 and above.
+- For installing CityFlow, it is recommended to follow the instructions provided at https://cityflow.readthedocs.io/en/latest/install.html.
+  
+|Name| Version |
+|---|---------|
+|Keras| v2.3.1   |
+|tensorflow-gpu| 1.14.0  |
+|CityFlow| 1.1.0   |
+| tqdm | 4.65.0 |
+| numpy | 1.21.5  |
+| matplotlib |  3.5.3  |
 
 
-- CityFlow Installation Guide: https://cityflow.readthedocs.io/en/latest/install.html
 
 # Files
 * ``runexp.py``
@@ -44,7 +37,7 @@ PotentLight, an innovative RL-based solution for adaptive traffic signal control
 
 # Datasets
 
-This repo containes four real-world datasets, which are stored in the `./data`
+This repo repository includes four real-world datasets. When extracting the 'data.zip' file, the resulting files will be stored in the 'project dir/data' directory.
  > The **storage path -- "dir"** to each dataset, as written in its corresponding JSON file, should be accurately specified based on your local machine's configuration.
   
 | Configurations |City| Traffic flow |
