@@ -14,7 +14,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 class DQNAgent(object):
     def __init__(self,
                  intersection_id,
-                 state_size=9,
+                 state_size=8,
                  action_size=8,
                  batch_size=32,
                  phase_list=[],
@@ -25,7 +25,7 @@ class DQNAgent(object):
         self.intersection_id = intersection_id
         self.action_size = action_size
         self.batch_size = batch_size #32
-        self.state_size = 8
+        self.state_size = state_size
 
         self.memory_size = 2000
         self.memory = deque(maxlen=self.memory_size)
