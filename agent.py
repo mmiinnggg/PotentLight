@@ -1,12 +1,10 @@
 import random
 import numpy as np
 from collections import deque
-from keras.models import Sequential
-from keras.layers import Dense, Dropout
-from keras.optimizers import Adam, RMSprop, SGD
-from keras.layers import Input, Dense, Conv2D, Flatten
-from keras.models import Model
-from keras.layers.merge import concatenate
+from tensorflow.keras.layers import Input, Dense
+from tensorflow.keras.models import Model
+from tensorflow.keras.optimizers import Adam, RMSprop, SGD
+import tensorflow as tf
 import os
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
