@@ -30,48 +30,33 @@ class DQNAgent(object):
         self.memory_size = 2000
         self.memory = deque(maxlen=self.memory_size)
 
-        self.learning_start = 2000
-        self.update_model_freq = 1
-        self.update_target_model_freq = 20
-
         self.gamma = 0.95  # discount rate
         self.epsilon = 0.1  # exploration rate
         self.epsilon_min = 0.01
         self.epsilon_decay = 0.995
-        self.learning_rate = 0.001 #0.005
-        self.d_dense = 20
-        self.n_layer = 2
+        self.learning_rate = 0.001 
 
         self.model = self._build_model()
-        self.target_model = self._build_model()
-        self.update_target_network()
 
         self.step = 0
         self.phase_list = phase_list
         self.timing_list = timing_list
 
-    def _build_model(self):
+    def _build_model(self, mode='action'):
         '''Initialize a Q network'''
+        feat0 = Input(shape=(1,))
+        feat1 = Input(shape=(8,))
 
-        dic_input_node = {"feat1": Input(shape=(1,), name="input_cur_phase"),
-                          "feat2": Input(shape=(8,), name="input_feat2")}
+        all_flatten_feature = tf.concat([feat0, feat1], axis=1, name="all_flatten_feature")
+        dense0 = Dense(20, activation="sigmoid")(all_flatten_feature)
+        dense1 = Dense(20, activation="sigmoid")(dense0)
+        q_values = Dense(self.action_size, activation="linear", name="q_values")(dense1)
 
-        list_all_flatten_feature = []
-        for feature_name in dic_input_node:
-            list_all_flatten_feature.append(dic_input_node[feature_name])
-        all_flatten_feature = concatenate(list_all_flatten_feature, axis=1, name="all_flatten_feature")
-
-        locals()["dense_0"] = Dense(self.d_dense, activation="relu", name="dense_0")(all_flatten_feature)
-        for i in range(1, self.n_layer):
-            locals()["dense_%d" % i] = Dense(self.d_dense, activation="relu", name="dense_%d" % i)(
-                locals()["dense_%d" % (i - 1)])
-        q_values = Dense(self.action_size, activation="linear", name="q_values")(
-            locals()["dense_%d" % (self.n_layer - 1)])
-        network = Model(inputs=[dic_input_node[feature_name] for feature_name in ["feat1", "feat2"]],
+        network = Model(inputs=[feat0, feat1],
                         outputs=q_values)
         network.compile(optimizer=RMSprop(lr=self.learning_rate),
                         loss="mean_squared_error")
-        # network.summary()
+        network.summary()
         return network
 
     def _reshape_ob(self, ob):
@@ -86,10 +71,6 @@ class DQNAgent(object):
     
     def sample(self):
         return random.randrange(self.action_size)
-
-    def update_target_network(self):
-        weights = self.model.get_weights()
-        self.target_model.set_weights(weights)
 
     def remember(self, ob, phase, action, reward, next_ob, next_phase):
         action = self.phase_list.index(action)
