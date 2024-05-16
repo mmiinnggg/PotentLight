@@ -205,11 +205,6 @@ def test(path = args.config_file):
                             p, timing_phase[id_] = world.get_timing_(id_, action_phase[id_])
                             rest_timing[id_] = timing_phase[id_]
 
-                if i % 20 == 0:
-                    for id_ in config["intersection_id"]:
-                        p = world.get_pressure_(id_)
-                        pressure[id_].append(p)
-
                 for _ in range(args.time_interval):
                     next_state, reward_, t1 = world.step(action_phase, i)
                     i += 1
@@ -224,6 +219,11 @@ def test(path = args.config_file):
                     episodes_rewards[id_] += reward[id_]
                     state[id_] = next_state[id_]
 
+            if i % 20 == 0:
+                    for id_ in config["intersection_id"]:
+                        p = world.get_pressure_(id_)
+                        pressure[id_].append(p)
+                        
             total_step += 1
             pbar.update(1)
             pbar.set_description(
