@@ -7,7 +7,6 @@ def parse_roadnet(roadnetFile):
     roadnet = json.load(open(roadnetFile))
     lane_phase_info_dict = {}
 
-    # many intersections exist in the roadnet and virtual intersection is controlled by signal
     for intersection in roadnet["intersections"]:
         if intersection['virtual']:
             continue
@@ -22,8 +21,6 @@ def parse_roadnet(roadnetFile):
         start_lane = []
         end_lane = []
         roadLink_lane_pair = {}
-        # roadLink_lane_pair = {ri: [] for ri in
-        #                       range(len(road_links))}  # roadLink includes some lane_pair: (start_lane, end_lane)
         rik = 0
         for r in road_links:
             if r['type'] != 'turn_right':
@@ -38,7 +35,6 @@ def parse_roadnet(roadnetFile):
                 el = road_link['endRoad'] + "_" + str(lane_link["endLaneIndex"])
                 start_lane.append(sl)
                 end_lane.append(el)
-                # roadLink_lane_pair[ri].append((sl, el))
                 if road_link['type'] != 'turn_right':
                     roadLink_lane_pair[rik].append([sl, el])
 
@@ -50,20 +46,11 @@ def parse_roadnet(roadnetFile):
         lane_phase_info_dict[intersection['id']]["end_lane"] = sorted(list(set(end_lane)))
         lane_phase_info_dict[intersection['id']]["lane_mapping"] = roadLink_lane_pair
 
-        # for phase_i in range(1, len(intersection["trafficLight"]["lightphases"])):
-        for phase_i in range(1, 5):#PressLight 4相位
-            # p = intersection["trafficLight"]["lightphases"][phase_i]
-            # lane_pair = []
-            # start_lane = []
-            # for ri in p["availableRoadLinks"]:
-            #     lane_pair.extend(roadLink_lane_pair[ri])
-            #     if roadLink_lane_pair[ri][0][0] not in start_lane:
-            #         start_lane.append(roadLink_lane_pair[ri][0][0])
+        for phase_i in range(1, 5):
             lane_phase_info_dict[intersection['id']]["phase"].append(phase_i)
-            # lane_phase_info_dict[intersection['id']]["phase_startLane_mapping"][phase_i] = start_lane
-            # lane_phase_info_dict[intersection['id']]["phase_roadLink_mapping"][phase_i] = lane_pair
 
     return lane_phase_info_dict
+
 
 
 def plot_data_lists(data_list,
